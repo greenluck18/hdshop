@@ -1,0 +1,16 @@
+# System.
+.DS_Store
+
+# IDE.
+.vscode/
+.vs/
+.idea/
+.dccache
+*.sublime-workspace
+*.sublime-project
+
+# Temp files.
+tmp/*
+!tmp/.gitkeep
+
+.env

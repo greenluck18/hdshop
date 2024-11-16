@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+
+  autoheal:
+    image: willfarrell/autoheal
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: "autoheal"
+      AUTOHEAL_START_PERIOD: 30
+      AUTOHEAL_INTERVAL: 10
+      AUTOHEAL_DEFAULT_STOP_TIMEOUT: 10
+      CURL_TIMEOUT: 5
+
+  db:
+    image: postgres:13
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hdshop_user
+      POSTGRES_DB: honeydukes_db
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - hdshop-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U hdshop_user -d honeydukes_db
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+
+  # backend:
+  #   image: postgres:13
+  #   restart: unless-stopped
+
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     DB_HOST: db
+  #     DB_USERNAME: your_username
+  #     DB_PASSWORD: your_password
+  #     DB_NAME: your_database
+  #   depends_on:
+  #     - db
+
+  
+volumes:
+  hdshop-db-data:
