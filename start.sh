@@ -1,10 +1,27 @@
-#read from .env file
-while read -r LINE; do
-  if [[ $LINE == *'='* ]] && [[ $LINE != '#'* ]]; then
-    ENV_VAR="$(echo -e "$LINE" | envsubst)"
-    eval "declare $ENV_VAR"
+
+#!/bin/bash
+
+set -eu
+
+if [[ ! -f .env ]]; then
+  echo ".env file not found!"
+  exit 1
+fi
+
+while IFS= read -r line; do
+  if [[ -z "$line" || "$line" == \#* ]]; then
+    continue
   fi
-done <.env
+
+  if [[ "$line" == *'='* ]]; then
+    KEY="${line%%=*}"
+    VALUE="${line#*=}"
+    export "$KEY=$VALUE"
+    echo "Loaded: $KEY=$VALUE"
+  fi
+done < .env
+
+
 
 cd tmp
 rm -rf repositories
@@ -16,10 +33,10 @@ cd hdshop-backend
 docker build -t hdshop-backend .
 cd ..
 
-# git clone git@github.com:greenluck18/hdshop-frontend.git
-# cd hdshop-frontend
-# docker build -t hdshop-frontend .
-# cd ..
+git clone git@github.com:greenluck18/hdshop-frontend.git
+cd hdshop-frontend
+docker build -t hdshop-frontend .
+cd ..
 
 cd ../..
 
