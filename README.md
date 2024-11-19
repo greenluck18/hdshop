@@ -9,7 +9,7 @@ This repository is a composition using Docker of honeduke shop:
 1. Change the .env.sample file to .env and fill in the environment variables.
 2. Write the following command to start the containers:
 ```bash
-./start.sh
+bash ./start.sh
 ```
 
 
